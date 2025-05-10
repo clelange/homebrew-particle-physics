@@ -16,15 +16,34 @@ Then you can install any of the available formulae below using `brew install <fo
 
 ## Available formulae
 
+- `osg-ca-certificates`: CA certificates from the Open Science Grid
 - `voms-clients`: Virtual Organization Membership Service clients for grid computing
 - `wlcg-voms`: VOMS configuration files for various WLCG Virtual Organizations (ALICE, ATLAS, CMS, LHCb, etc.)
 
 ## Usage
 
+### osg-ca-certificates
+
+After installation, the OSG CA certificates are available in:
+- `$(brew --prefix osg-ca-certificates)/etc/grid-security/certificates/`
+
+To use with grid tools, you may need to:
+
+1. Create symbolic links to system locations (requires sudo):
+   ```shell
+   sudo mkdir -p /etc/grid-security
+   sudo ln -sf $(brew --prefix osg-ca-certificates)/etc/grid-security/certificates /etc/grid-security/certificates
+   ```
+
+2. Or configure your environment:
+   ```shell
+   export X509_CERT_DIR=$(brew --prefix osg-ca-certificates)/etc/grid-security/certificates
+   ```
+
 ### wlcg-voms
 
 After installation, the VOMS configuration files are available in:
-- `$(brew --prefix)/opt/wlcg-voms/etc/grid-security/vomsdir/` 
+- `$(brew --prefix)/opt/wlcg-voms/etc/grid-security/vomsdir/`
 - `$(brew --prefix)/opt/wlcg-voms/etc/vomses/`
 
 To use with VOMS client tools, you may need to:
