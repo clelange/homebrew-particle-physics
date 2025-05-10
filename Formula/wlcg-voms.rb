@@ -10,7 +10,7 @@ class WlcgVoms < Formula
   def install
     # Extract the etc directory structure to the formula's prefix
     cp_r "etc", prefix
-    
+
     # Create the grid-security directory in Homebrew's etc
     (etc/"grid-security").mkpath
   end
@@ -24,7 +24,7 @@ class WlcgVoms < Formula
         Homebrew has installed them into:
           #{prefix}/etc/grid-security/vomsdir/
           #{prefix}/etc/vomses/
-        
+
         You may need to:
         1. Symlink these directories/files to the standard system locations if your
             tools do not allow overriding these paths.
@@ -35,6 +35,11 @@ class WlcgVoms < Formula
         2. Configure your VOMS client tools (e.g., voms-proxy-init) to look for
             configuration files in the Homebrew prefix, if possible. This often involves
             setting environment variables like VOMS_USERCONF or X509_VOMS_DIR.
+              export X509_VOMS_DIR="#{prefix}/etc/grid-security/vomsdir"
+            For voms-proxy-init, either add the option -vomses #{prefix}/etc/vomses/
+            or
+              mkdir ${HOME}/.voms
+              ln -s #{prefix}/etc/vomses ${HOME}/.voms/
 
         Please check the documentation for your specific VOMS client tools.
       EOS
@@ -44,12 +49,12 @@ class WlcgVoms < Formula
       assert_predicate prefix/"etc", :exist?, "Formula's etc directory should exist."
       assert_predicate prefix/"etc/grid-security/vomsdir", :exist?, "'grid-security/vomsdir' directory should be installed in #{prefix}/etc."
       assert_predicate prefix/"etc/vomses", :exist?, "'vomses' directory should be installed in #{prefix}/etc."
-      
+
       # Verify that VO files exist for different experiments
       assert_predicate prefix/"etc/grid-security/vomsdir/cms/voms-cms-auth.cern.ch.lsc", :exist?, "CMS VO LSC file should exist"
       assert_predicate prefix/"etc/vomses/cms-voms-cms-auth.cern.ch", :exist?, "CMS VO vomses file should exist"
       assert_predicate prefix/"etc/grid-security/vomsdir/atlas/voms-atlas-auth.cern.ch.lsc", :exist?, "ATLAS VO LSC file should exist"
-      
+
       # Check that grid-security directory exists in homebrew etc
       assert_predicate etc/"grid-security", :exist?, "grid-security directory should exist in #{etc}"
     end

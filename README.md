@@ -58,7 +58,8 @@ To use with VOMS client tools, you may need to:
 2. Or configure your environment:
    ```shell
    export X509_VOMS_DIR=$(brew --prefix)/opt/wlcg-voms/etc/grid-security/vomsdir
-   export VOMS_USERCONF=$(brew --prefix)/opt/wlcg-voms/etc/vomses
+   mkdir ${HOME}/.voms
+   ln -s $(brew --prefix wlcg-voms)/etc/vomses ${HOME}/.voms/
    ```
 
 ## Adding formulae
