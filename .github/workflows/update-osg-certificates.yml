@@ -1,0 +1,56 @@
+name: Update OSG CA Certificates
+
+on:
+  schedule:
+    # Run daily at 00:00 UTC
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+    # Allow manual triggering
+
+jobs:
+  update-formula:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Debug environment
+        run: |
+          echo "GitHub workspace: ${GITHUB_WORKSPACE}"
+          ls -la
+          echo "Formula directory contents:"
+          ls -la Formula/
+      
+      - name: Check OSG CA certificates info
+        run: |
+          echo "Fetching OSG CA certificates info from remote source"
+          curl -s https://repo.opensciencegrid.org/cadist/ca-certs-version-igtf-new
+          echo ""
+          echo "Current formula version:"
+          grep -n "version" Formula/osg-ca-certificates.rb
+      
+      - name: Install Updatecli
+        uses: updatecli/updatecli-action@v2
+        with:
+          version: "0.74.0"  # Use a specific version for consistency
+      
+      - name: Run Updatecli
+        run: updatecli apply --config ${GITHUB_WORKSPACE}/.github/updatecli/update-osg-certificates.yaml --debug
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Print result
+        run: |
+          if [[ -f "updatecli.result.yaml" ]]; then
+            echo "=== Updatecli Result ==="
+            cat updatecli.result.yaml
+          else
+            echo "No changes detected or no result file created"
+          fi
+          
+          echo "=== Formula after update attempt ==="
+          cat Formula/osg-ca-certificates.rb
