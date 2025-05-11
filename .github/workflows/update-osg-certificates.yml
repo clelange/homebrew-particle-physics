@@ -29,7 +29,7 @@ jobs:
         uses: updatecli/updatecli-action@v2
 
       - name: Run Updatecli
-        run: updatecli apply --config ${GITHUB_WORKSPACE}/.github/updatecli/update-osg-certificates.yaml --values --config ${GITHUB_WORKSPACE}/.github/updatecli/values.yaml --debug
+        run: updatecli apply --config ${GITHUB_WORKSPACE}/.github/updatecli/update-osg-certificates.yaml --values ${GITHUB_WORKSPACE}/.github/updatecli/values.yaml --debug
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
