@@ -11,17 +11,9 @@ scms:
       branch: "{{ .github.branch }}"
 
 sources:
-  certsInfoFile:
-    name: "OSG CA Certificate Information File Content"
-    kind: file
-    spec:
-      file: https://repo.opensciencegrid.org/cadist/ca-certs-version-igtf-new
-
   certsVersion:
     name: "OSG CA Certificate Version"
     kind: shell
-    dependson:
-      - certsInfoFile
     spec:
       command: >-
         curl -s https://repo.opensciencegrid.org/cadist/ca-certs-version-igtf-new |
@@ -32,8 +24,6 @@ sources:
   tarballUrl:
     name: "OSG CA Certificate Tarball URL"
     kind: shell
-    dependson:
-      - certsInfoFile
     spec:
       command: >-
         curl -s https://repo.opensciencegrid.org/cadist/ca-certs-version-igtf-new |
@@ -43,8 +33,6 @@ sources:
   sha256Sum:
     name: "OSG CA Certificate SHA256 Sum"
     kind: shell
-    dependson:
-      - certsInfoFile
     spec:
       command: >-
         curl -s https://repo.opensciencegrid.org/cadist/ca-certs-version-igtf-new |
@@ -52,7 +40,7 @@ sources:
         cut -d= -f2
 
 targets:
-  updateVersionQuoted:
+  updateVersion:
     name: "Update version with quotes"
     sourceid: certsVersion
     kind: file
