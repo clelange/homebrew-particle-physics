@@ -1,42 +1,42 @@
 sources:
-  certsInfo:
-    name: "OSG CA Certificate Information"
+  certsInfoFile:
+    name: "OSG CA Certificate Information File Content"
     kind: file
     spec:
       file: https://repo.opensciencegrid.org/cadist/ca-certs-version-igtf-new
-      
+
   certsVersion:
     name: "OSG CA Certificate Version"
     kind: shell
     dependson:
-      - certsInfo
+      - certsInfoFile
     spec:
       command: >-
-        curl -s https://repo.opensciencegrid.org/cadist/ca-certs-version-igtf-new | 
-        grep "certsversion=" | 
-        cut -d= -f2 | 
+        curl -s https://repo.opensciencegrid.org/cadist/ca-certs-version-igtf-new |
+        grep "certsversion=" |
+        cut -d= -f2 |
         awk '{print $1}'
-  
+
   tarballUrl:
     name: "OSG CA Certificate Tarball URL"
     kind: shell
     dependson:
-      - certsInfo
+      - certsInfoFile
     spec:
       command: >-
-        curl -s https://repo.opensciencegrid.org/cadist/ca-certs-version-igtf-new | 
-        grep "tarball=" | 
+        curl -s https://repo.opensciencegrid.org/cadist/ca-certs-version-igtf-new |
+        grep "tarball=" |
         cut -d= -f2
-  
+
   sha256Sum:
     name: "OSG CA Certificate SHA256 Sum"
     kind: shell
     dependson:
-      - certsInfo
+      - certsInfoFile
     spec:
       command: >-
-        curl -s https://repo.opensciencegrid.org/cadist/ca-certs-version-igtf-new | 
-        grep "tarball_sha256sum=" | 
+        curl -s https://repo.opensciencegrid.org/cadist/ca-certs-version-igtf-new |
+        grep "tarball_sha256sum=" |
         cut -d= -f2
 
 targets:
@@ -46,18 +46,9 @@ targets:
     kind: file
     spec:
       file: Formula/osg-ca-certificates.rb
-      matchpattern: 'version "[^"]+"'
-      replacepattern: 'version "{{ source "certsVersion" }}"'
-  
-  updateVersionUnquoted:
-    name: "Update version without quotes"
-    sourceid: certsVersion
-    kind: file
-    spec:
-      file: Formula/osg-ca-certificates.rb
-      matchpattern: 'version \S+'
-      replacepattern: 'version {{ source "certsVersion" }}'
-  
+      matchpattern: 'version "(.*)"'
+      replacepattern: 'version "{{ source `certsVersion` }}"'
+
   updateUrl:
     name: "Update tarball URL"
     sourceid: tarballUrl
@@ -65,8 +56,8 @@ targets:
     spec:
       file: Formula/osg-ca-certificates.rb
       matchpattern: 'url "[^"]+"'
-      replacepattern: 'url "{{ source "tarballUrl" }}"'
-  
+      replacepattern: 'url "{{ source `tarballUrl` }}"'
+
   updateSha:
     name: "Update SHA256 checksum"
     sourceid: sha256Sum
@@ -74,7 +65,7 @@ targets:
     spec:
       file: Formula/osg-ca-certificates.rb
       matchpattern: 'sha256 "[^"]+"'
-      replacepattern: 'sha256 "{{ source "sha256Sum" }}"'
+      replacepattern: 'sha256 "{{ source `sha256Sum` }}"'
 
 actions:
   default:
@@ -83,13 +74,13 @@ actions:
     spec:
       automerge: false
       mergemethod: squash
-      title: "Update OSG CA Certificates to {{ source \"certsVersion\" }}"
+      title: "Update OSG CA Certificates to {{ source `certsVersion` }}"
       description: |
-        This automated PR updates the OSG CA Certificates to version {{ source "certsVersion" }}.
-        
-        * New version: {{ source "certsVersion" }}
-        * Tarball URL: {{ source "tarballUrl" }}
-        * SHA256: {{ source "sha256Sum" }}
+        This automated PR updates the OSG CA Certificates to version {{ source `certsVersion` }}.
+
+        * New version: {{ source `certsVersion` }}
+        * Tarball URL: {{ source `tarballUrl` }}
+        * SHA256: {{ source `sha256Sum` }}
       labels:
         - automation
         - dependencies
