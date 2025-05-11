@@ -25,19 +25,11 @@ jobs:
           echo "Formula directory contents:"
           ls -la Formula/
 
-      - name: Check OSG CA certificates info
-        run: |
-          echo "Fetching OSG CA certificates info from remote source"
-          curl -s https://repo.opensciencegrid.org/cadist/ca-certs-version-igtf-new
-          echo ""
-          echo "Current formula version:"
-          grep -n "version" Formula/osg-ca-certificates.rb
-
       - name: Install Updatecli
         uses: updatecli/updatecli-action@v2
 
       - name: Run Updatecli
-        run: updatecli apply --config ${GITHUB_WORKSPACE}/.github/updatecli/update-osg-certificates.yaml --debug
+        run: updatecli apply --config ${GITHUB_WORKSPACE}/.github/updatecli/update-osg-certificates.yaml --values --config ${GITHUB_WORKSPACE}/.github/updatecli/values.yaml --debug
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
