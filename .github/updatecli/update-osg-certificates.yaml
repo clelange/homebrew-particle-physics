@@ -39,6 +39,15 @@ sources:
         grep "tarball_sha256sum=" |
         cut -d= -f2
 
+  validateContent:
+    name: "Validate CA Certificates content"
+    kind: shell
+    spec:
+      command: >-
+        tempfile=$(mktemp) &&
+        curl -sfL --max-time 30 "{{ source `tarballUrl` }}" -o "$tempfile" &&
+        echo "{{ source `sha256Sum` }} $tempfile" | sha256sum -c -
+
 targets:
   updateVersion:
     name: "Update version with quotes"
