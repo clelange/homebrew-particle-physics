@@ -1,3 +1,15 @@
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
 sources:
   certsInfoFile:
     name: "OSG CA Certificate Information File Content"
@@ -71,10 +83,10 @@ actions:
   default:
     kind: github/pullrequest
     scmid: default
+    title: "Update OSG CA Certificates to {{ source `certsVersion` }}"
     spec:
-      automerge: false
-      mergemethod: squash
-      title: "Update OSG CA Certificates to {{ source `certsVersion` }}"
+      #   automerge: false
+      #   mergemethod: squash
       description: |
         This automated PR updates the OSG CA Certificates to version {{ source `certsVersion` }}.
 
