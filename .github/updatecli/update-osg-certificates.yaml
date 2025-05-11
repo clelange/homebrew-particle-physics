@@ -71,10 +71,10 @@ actions:
   default:
     kind: github/pullrequest
     scmid: default
-    title: "Update OSG CA Certificates to {{ source `certsVersion` }}"
+    title: Update OSG CA Certificates to "{{ source `certsVersion` }}"
     spec:
-      #   automerge: false
-      #   mergemethod: squash
+      automerge: false
+      mergemethod: squash
       description: |
         This automated PR updates the OSG CA Certificates to version {{ source `certsVersion` }}.
 
