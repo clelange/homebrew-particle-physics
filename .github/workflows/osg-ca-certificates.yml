@@ -1,0 +1,36 @@
+name: Test osg-ca-certificates
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
+    paths:
+      - 'Formula/osg-ca-certificates.rb'
+      - '.github/workflows/osg-ca-certificates.yml'
+
+jobs:
+  test-formula:
+    name: Test Formula (macOS-latest)
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Homebrew path
+        run: |
+          echo "/usr/local/bin:/usr/local/sbin" >> $GITHUB_PATH
+          echo "HOMEBREW_PREFIX=/usr/local" >> $GITHUB_ENV
+          echo "HOMEBREW_REPOSITORY=/usr/local/Homebrew" >> $GITHUB_ENV
+
+      - name: Add tap to Homebrew
+        run: |
+          brew tap "${GITHUB_REPOSITORY}" "${GITHUB_WORKSPACE}"
+
+      - name: Install and test formula
+        run: |
+          brew install --verbose osg-ca-certificates
+          brew test osg-ca-certificates
+          brew audit --strict osg-ca-certificates
+          brew style osg-ca-certificates
