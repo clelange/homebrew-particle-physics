@@ -1,7 +1,6 @@
 class OsgCaCertificates < Formula
   desc "CA certificates from the Open Science Grid"
   homepage "https://repo.opensciencegrid.org/cadist/"
-  version "1.135IGTFNEW"
   url "http://repo.opensciencegrid.org/cadist/1.135IGTFNEW/osg-certificates-1.135IGTFNEW.tar.gz"
   sha256 "7d81c62bcec5bd90d390f2c9878d4c2dc647c28f512bf2e9467b3ffe44426cc3"
 
@@ -49,21 +48,21 @@ class OsgCaCertificates < Formula
   test do
     # Verify directory exists
     cert_dir = prefix/"etc/grid-security/certificates"
-    assert_predicate cert_dir, :exist?
+    assert_path_exists cert_dir
 
     # Test for certificate files (should have many)
     cert_files_count = Dir["#{cert_dir}/*.0"].length
     assert cert_files_count > 50, "Expected at least 50 certificate files"
 
     # Verify specific known files from the distribution
-    assert_predicate cert_dir/"CERN-Root-2.pem", :exist?, "CERN-Root-2.pem should be installed"
-    assert_predicate cert_dir/"cacerts_sha256sum.txt", :exist?, "SHA256 checksum file should be installed"
+    assert_path_exists cert_dir/"CERN-Root-2.pem"
+    assert_path_exists cert_dir/"cacerts_sha256sum.txt"
 
     # Verify a certificate file has expected content
     cert_content = File.read(cert_dir/"CERN-Root-2.pem")
     assert_match(/BEGIN CERTIFICATE/, cert_content)
-    
+
     # Check that grid-security directory exists in homebrew etc
-    assert_predicate etc/"grid-security", :exist?, "grid-security directory should exist in #{etc}"
+    assert_path_exists etc/"grid-security"
   end
 end
