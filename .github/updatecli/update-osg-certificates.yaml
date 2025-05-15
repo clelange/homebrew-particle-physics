@@ -49,15 +49,6 @@ sources:
         echo "{{ source `sha256Sum` }} $tempfile" | sha256sum -c -
 
 targets:
-  updateVersion:
-    name: "Update version with quotes"
-    sourceid: certsVersion
-    kind: file
-    spec:
-      file: Formula/osg-ca-certificates.rb
-      matchpattern: 'version "(.*)"'
-      replacepattern: 'version "{{ source `certsVersion` }}"'
-
   updateUrl:
     name: "Update tarball URL"
     sourceid: tarballUrl
