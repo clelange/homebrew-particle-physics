@@ -75,6 +75,7 @@ actions:
     spec:
       automerge: false
       mergemethod: squash
+      sourcebranch: update-osg-ca-certificates-{{ source `certsVersion` }}
       description: |
         This automated PR updates the OSG CA Certificates to version {{ source `certsVersion` }}.
 

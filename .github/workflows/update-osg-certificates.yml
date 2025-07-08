@@ -28,6 +28,11 @@ jobs:
       - name: Install Updatecli
         uses: updatecli/updatecli-action@v2
 
+      - name: Configure Git
+        run: |
+          git config --global user.name "osg-certificates-updateclibot[bot]"
+          git config --global user.email "osg-certificates-updateclibot[bot]@users.noreply.github.com"
+
       - name: Run Updatecli
         run: updatecli apply --config ${GITHUB_WORKSPACE}/.github/updatecli/update-osg-certificates.yaml --values ${GITHUB_WORKSPACE}/.github/updatecli/values.yaml --debug
         env:
@@ -35,12 +40,5 @@ jobs:
 
       - name: Print result
         run: |
-          if [[ -f "updatecli.result.yaml" ]]; then
-            echo "=== Updatecli Result ==="
-            cat updatecli.result.yaml
-          else
-            echo "No changes detected or no result file created"
-          fi
-
           echo "=== Formula after update attempt ==="
           cat Formula/osg-ca-certificates.rb
