@@ -53,6 +53,7 @@ targets:
     name: "Update tarball URL"
     sourceid: tarballUrl
     kind: file
+    scmid: default
     spec:
       file: Formula/osg-ca-certificates.rb
       matchpattern: 'url "[^"]+"'
@@ -62,6 +63,7 @@ targets:
     name: "Update SHA256 checksum"
     sourceid: sha256Sum
     kind: file
+    scmid: default
     spec:
       file: Formula/osg-ca-certificates.rb
       matchpattern: 'sha256 "[^"]+"'
@@ -72,9 +74,6 @@ actions:
     kind: github/pullrequest
     scmid: default
     title: Update OSG CA Certificates to "{{ source `certsVersion` }}"
-    targetids:
-      - updateUrl
-      - updateSha
     spec:
       automerge: false
       mergemethod: squash
