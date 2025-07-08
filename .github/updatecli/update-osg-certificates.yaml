@@ -72,6 +72,9 @@ actions:
     kind: github/pullrequest
     scmid: default
     title: Update OSG CA Certificates to "{{ source `certsVersion` }}"
+    targetids:
+      - updateUrl
+      - updateSha
     spec:
       automerge: false
       mergemethod: squash
