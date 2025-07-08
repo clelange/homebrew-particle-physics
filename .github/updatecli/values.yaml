@@ -2,7 +2,7 @@ github:
   user: "osg-certificates-updateclibot[bot]"
   email: "osg-certificates-updateclibot[bot]@users.noreply.github.com"
   username: "osg-certificates-updateclibot[bot]"
-  token: "GITHUB_TOKEN"
+  token: "UPDATECLI_GITHUB_TOKEN"
   branch: "main"
   owner: "clelange"
   repository: "homebrew-particle-physics"

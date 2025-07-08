@@ -1,6 +1,12 @@
 name: Update OSG CA Certificates
 
 on:
+  push:
+    branches: [main]
+  # Trigger Updatecli if a pullrequest is open targeting the main branch.
+  # This is useful to test Updatecli manifest change
+  pull_request:
+    branches: [main]
   schedule:
     # Run daily at 00:00 UTC
     - cron: "0 0 * * *"
@@ -11,8 +17,8 @@ jobs:
   update-formula:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-      pull-requests: write
+      contents: "write"
+      pull-requests: "write"
 
     steps:
       - name: Checkout repository
@@ -28,17 +34,22 @@ jobs:
       - name: Install Updatecli
         uses: updatecli/updatecli-action@v2
 
-      - name: Configure Git
-        run: |
-          git config --global user.name "osg-certificates-updateclibot[bot]"
-          git config --global user.email "osg-certificates-updateclibot[bot]@users.noreply.github.com"
-
-      - name: Run Updatecli
-        run: updatecli apply --config ${GITHUB_WORKSPACE}/.github/updatecli/update-osg-certificates.yaml --values ${GITHUB_WORKSPACE}/.github/updatecli/values.yaml --debug
+      - name: Run Updatecli in Dry Run mode
+        run: updatecli diff --config ${GITHUB_WORKSPACE}/.github/updatecli/update-osg-certificates.yaml --values ${GITHUB_WORKSPACE}/.github/updatecli/values.yaml
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          UPDATECLI_GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Run Updatecli in apply mode
+        run: updatecli apply --config ${GITHUB_WORKSPACE}/.github/updatecli/update-osg-certificates.yaml --values ${GITHUB_WORKSPACE}/.github/updatecli/values.yaml
+        env:
+          UPDATECLI_GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Print result
         run: |
           echo "=== Formula after update attempt ==="
           cat Formula/osg-ca-certificates.rb
+          # Check if any changes were made and committed
+          git status
+          # List all branches to see if a new PR branch was created
+          echo "=== Branches ==="
+          git branch -a
