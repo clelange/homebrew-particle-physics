@@ -2,7 +2,7 @@ class OsgCaCertificates < Formula
   desc "CA certificates from the Open Science Grid"
   homepage "https://repo.opensciencegrid.org/cadist/"
   url "http://repo.opensciencegrid.org/cadist/1.137IGTFNEW/osg-certificates-1.137IGTFNEW.tar.gz"
-  sha256 "178ad1c15843f5b75bc9d62ba18d36b10a621a752b66ea768cc85dceccabbfe5"
+  sha256 "42fd88f129a81aeede86bdc6d97b50e909fb4368b746b0cdfce46305dd4f2a1e"
 
   def install
     # Create directories
