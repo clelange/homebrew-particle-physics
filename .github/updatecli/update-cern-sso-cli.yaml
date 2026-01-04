@@ -1,0 +1,105 @@
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  latestVersion:
+    name: "Latest cern-sso-cli version"
+    kind: githubrelease
+    spec:
+      owner: "clelange"
+      repository: "cern-sso-cli"
+      token: "{{ requiredEnv .github.token }}"
+      versionfilter:
+        kind: semver
+        pattern: "*"
+
+  checksumsUrl:
+    name: "Checksums file URL"
+    kind: shell
+    spec:
+      command: >-
+        echo "https://github.com/clelange/cern-sso-cli/releases/download/{{ source `latestVersion` }}/checksums.txt"
+
+  checksumsContent:
+    name: "Checksums file content"
+    kind: shell
+    spec:
+      command: >-
+        curl -sL "{{ source `checksumsUrl` }}"
+
+  arm64Sha256:
+    name: "darwin-arm64-webauthn SHA256"
+    kind: shell
+    spec:
+      command: >-
+        echo "{{ source `checksumsContent` }}" | grep "cern-sso-cli-darwin-arm64-webauthn$" | awk '{print $1}'
+
+  amd64Sha256:
+    name: "darwin-amd64-webauthn SHA256"
+    kind: shell
+    spec:
+      command: >-
+        echo "{{ source `checksumsContent` }}" | grep "cern-sso-cli-darwin-amd64-webauthn$" | awk '{print $1}'
+
+targets:
+  updateVersion:
+    name: "Update version"
+    sourceid: latestVersion
+    kind: file
+    scmid: default
+    spec:
+      file: Formula/cern-sso-cli.rb
+      matchpattern: 'version "[^"]+"'
+      replacepattern: 'version "{{ source `latestVersion` }}"'
+
+  updateArm64Sha256:
+    name: "Update darwin-arm64 SHA256"
+    sourceid: arm64Sha256
+    kind: file
+    scmid: default
+    spec:
+      file: Formula/cern-sso-cli.rb
+      matchpattern: 'url "https://github.com/clelange/cern-sso-cli/releases/download/[^/]+/cern-sso-cli-darwin-arm64-webauthn"\s*\n\s*sha256 "[^"]+"'
+      replacepattern: |
+        url "https://github.com/clelange/cern-sso-cli/releases/download/{{ source `latestVersion` }}/cern-sso-cli-darwin-arm64-webauthn"
+          sha256 "{{ source `arm64Sha256` }}"
+
+  updateAmd64Sha256:
+    name: "Update darwin-amd64 SHA256"
+    sourceid: amd64Sha256
+    kind: file
+    scmid: default
+    spec:
+      file: Formula/cern-sso-cli.rb
+      matchpattern: 'url "https://github.com/clelange/cern-sso-cli/releases/download/[^/]+/cern-sso-cli-darwin-amd64-webauthn"\s*\n\s*sha256 "[^"]+"'
+      replacepattern: |
+        url "https://github.com/clelange/cern-sso-cli/releases/download/{{ source `latestVersion` }}/cern-sso-cli-darwin-amd64-webauthn"
+          sha256 "{{ source `amd64Sha256` }}"
+
+actions:
+  default:
+    kind: github/pullrequest
+    scmid: default
+    title: Update cern-sso-cli to "{{ source `latestVersion` }}"
+    spec:
+      automerge: false
+      mergemethod: squash
+      sourcebranch: update-cern-sso-cli-{{ source `latestVersion` }}
+      description: |
+        This automated PR updates cern-sso-cli to version {{ source `latestVersion` }}.
+
+        * New version: {{ source `latestVersion` }}
+        * darwin-arm64 SHA256: {{ source `arm64Sha256` }}
+        * darwin-amd64 SHA256: {{ source `amd64Sha256` }}
+      labels:
+        - automation
+        - dependencies
