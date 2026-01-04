@@ -1,8 +1,8 @@
 class CernSsoCli < Formula
   desc "Command-line interface to obtain CERN SSO cookies and tokens"
   homepage "https://github.com/clelange/cern-sso-cli"
-  url "https://github.com/clelange/cern-sso-cli/archive/refs/tags/v0.19.1.tar.gz"
-  sha256 "0d07f9d6b5db438bc19a0e43eedd59b23489b61aa43bcc56fd19c139bf4d2176"
+  url "https://github.com/clelange/cern-sso-cli/archive/refs/tags/v0.20.0.tar.gz"
+  sha256 "de72dfa638451fcf16581ea42d61106372788263b2e2e326e1588e8ca6a3f8b4"
   license "GPL-3.0-only"
 
   depends_on "go" => :build
