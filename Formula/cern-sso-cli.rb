@@ -20,15 +20,11 @@ class CernSsoCli < Formula
     bin.install "cern-sso-cli-darwin-amd64-webauthn" => "cern-sso-cli" if Hardware::CPU.intel?
     bin.install "cern-sso-cli-darwin-arm64-webauthn" => "cern-sso-cli" if Hardware::CPU.arm?
 
+    chmod 0755, bin/"cern-sso-cli"
     generate_completions_from_executable(bin/"cern-sso-cli", "completion")
   end
 
-  def caveats
-    <<~EOS
-      To use WebAuthn (YubiKey) support, install libfido2:
-        brew install libfido2
-      EOS
-  end
+
 
   test do
     system bin/"cern-sso-cli", "--version"
