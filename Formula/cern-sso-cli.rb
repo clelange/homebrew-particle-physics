@@ -17,7 +17,8 @@ class CernSsoCli < Formula
   depends_on "libfido2"
 
   def install
-    bin.install downloaded_file => "cern-sso-cli"
+    bin.install "cern-sso-cli-darwin-amd64-webauthn" => "cern-sso-cli" if Hardware::CPU.intel?
+    bin.install "cern-sso-cli-darwin-arm64-webauthn" => "cern-sso-cli" if Hardware::CPU.arm?
 
     generate_completions_from_executable(bin/"cern-sso-cli", "completion")
   end
