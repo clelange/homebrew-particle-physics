@@ -22,33 +22,19 @@ sources:
         kind: semver
         pattern: "*"
 
-  checksumsUrl:
-    name: "Checksums file URL"
-    kind: shell
-    spec:
-      command: >-
-        echo "https://github.com/clelange/cern-sso-cli/releases/download/{{ source `latestVersion` }}/checksums.txt"
-
-  checksumsContent:
-    name: "Checksums file content"
-    kind: shell
-    spec:
-      command: >-
-        curl -sL "{{ source `checksumsUrl` }}"
-
   arm64Sha256:
     name: "darwin-arm64-webauthn SHA256"
     kind: shell
     spec:
       command: >-
-        echo "{{ source `checksumsContent` }}" | grep "cern-sso-cli-darwin-arm64-webauthn$" | awk '{print $1}'
+        curl -sL https://github.com/clelange/cern-sso-cli/releases/download/{{ source `latestVersion` }}/checksums.txt | grep "cern-sso-cli-darwin-arm64-webauthn$" | awk '{print $1}'
 
   amd64Sha256:
     name: "darwin-amd64-webauthn SHA256"
     kind: shell
     spec:
       command: >-
-        echo "{{ source `checksumsContent` }}" | grep "cern-sso-cli-darwin-amd64-webauthn$" | awk '{print $1}'
+        curl -sL https://github.com/clelange/cern-sso-cli/releases/download/{{ source `latestVersion` }}/checksums.txt | grep "cern-sso-cli-darwin-amd64-webauthn$" | awk '{print $1}'
 
 targets:
   updateVersion:
@@ -61,29 +47,45 @@ targets:
       matchpattern: 'version "[^"]+"'
       replacepattern: 'version "{{ source `latestVersion` }}"'
 
-  updateArm64Sha256:
-    name: "Update darwin-arm64 SHA256"
+  updateUrlArm64:
+    name: "Update arm64 URL"
+    sourceid: latestVersion
+    kind: file
+    scmid: default
+    spec:
+      file: Formula/cern-sso-cli.rb
+      matchpattern: 'url "https://github.com/clelange/cern-sso-cli/releases/download/v[0-9.]*/cern-sso-cli-darwin-arm64-webauthn"'
+      replacepattern: 'url "https://github.com/clelange/cern-sso-cli/releases/download/{{ source `latestVersion` }}/cern-sso-cli-darwin-arm64-webauthn"'
+
+  updateUrlAmd64:
+    name: "Update amd64 URL"
+    sourceid: latestVersion
+    kind: file
+    scmid: default
+    spec:
+      file: Formula/cern-sso-cli.rb
+      matchpattern: 'url "https://github.com/clelange/cern-sso-cli/releases/download/v[0-9.]*/cern-sso-cli-darwin-amd64-webauthn"'
+      replacepattern: 'url "https://github.com/clelange/cern-sso-cli/releases/download/{{ source `latestVersion` }}/cern-sso-cli-darwin-amd64-webauthn"'
+
+  updateSha256Arm64:
+    name: "Update arm64 SHA256"
     sourceid: arm64Sha256
     kind: file
     scmid: default
     spec:
       file: Formula/cern-sso-cli.rb
-      matchpattern: 'url "https://github.com/clelange/cern-sso-cli/releases/download/[^/]+/cern-sso-cli-darwin-arm64-webauthn"\s*\n\s*sha256 "[^"]+"'
-      replacepattern: |
-        url "https://github.com/clelange/cern-sso-cli/releases/download/{{ source `latestVersion` }}/cern-sso-cli-darwin-arm64-webauthn"
-          sha256 "{{ source `arm64Sha256` }}"
+      matchpattern: 'sha256 "[^"]+"'
+      replacepattern: 'sha256 "{{ source `arm64Sha256` }}"'
 
-  updateAmd64Sha256:
-    name: "Update darwin-amd64 SHA256"
+  updateSha256Amd64:
+    name: "Update amd64 SHA256"
     sourceid: amd64Sha256
     kind: file
     scmid: default
     spec:
       file: Formula/cern-sso-cli.rb
-      matchpattern: 'url "https://github.com/clelange/cern-sso-cli/releases/download/[^/]+/cern-sso-cli-darwin-amd64-webauthn"\s*\n\s*sha256 "[^"]+"'
-      replacepattern: |
-        url "https://github.com/clelange/cern-sso-cli/releases/download/{{ source `latestVersion` }}/cern-sso-cli-darwin-amd64-webauthn"
-          sha256 "{{ source `amd64Sha256` }}"
+      matchpattern: 'sha256 "[^"]+"'
+      replacepattern: 'sha256 "{{ source `amd64Sha256` }}"'
 
 actions:
   default:
@@ -96,10 +98,6 @@ actions:
       sourcebranch: update-cern-sso-cli-{{ source `latestVersion` }}
       description: |
         This automated PR updates cern-sso-cli to version {{ source `latestVersion` }}.
-
-        * New version: {{ source `latestVersion` }}
-        * darwin-arm64 SHA256: {{ source `arm64Sha256` }}
-        * darwin-amd64 SHA256: {{ source `amd64Sha256` }}
       labels:
         - automation
         - dependencies
