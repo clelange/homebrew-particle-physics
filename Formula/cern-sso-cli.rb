@@ -6,19 +6,18 @@ class CernSsoCli < Formula
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/clelange/cern-sso-cli/releases/download/v0.20.0/cern-sso-cli-darwin-amd64"
-      sha256 "d64786c97113555b135a18fdaaa89605859b4b1286eaf281b24c85780680e656"
+      url "https://github.com/clelange/cern-sso-cli/releases/download/v0.20.0/cern-sso-cli-darwin-amd64-webauthn"
+      sha256 "2bd5c727ccb5c4776a5df0302cd01b318702f09819179f609c3019022facd034"
     elsif Hardware::CPU.arm?
-      url "https://github.com/clelange/cern-sso-cli/releases/download/v0.20.0/cern-sso-cli-darwin-arm64"
-      sha256 "3d995ecc753e43436159bc9f920d7b72d112dfc789fb1c5f1c328b2740e1ebf8"
+      url "https://github.com/clelange/cern-sso-cli/releases/download/v0.20.0/cern-sso-cli-darwin-arm64-webauthn"
+      sha256 "7f3578334a9f754a36947d719fa0babf698d22a6cc349118e3a215f8dc7a04b7"
     end
   end
 
-  depends_on "libfido2" => :optional
+  depends_on "libfido2"
 
   def install
-    bin.install "cern-sso-cli-darwin-amd64" => "cern-sso-cli" if Hardware::CPU.intel?
-    bin.install "cern-sso-cli-darwin-arm64" => "cern-sso-cli" if Hardware::CPU.arm?
+    bin.install downloaded_file => "cern-sso-cli"
 
     generate_completions_from_executable(bin/"cern-sso-cli", "completion")
   end
