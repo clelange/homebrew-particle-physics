@@ -31,11 +31,12 @@ targets:
     spec:
       command: >-
         VERSION={{ source `latestVersion` }} &&
+        VERSION_NO_V=$(echo $VERSION | sed 's/^v//') &&
         curl -sL https://github.com/clelange/cern-sso-cli/releases/download/$VERSION/checksums.txt > checksums.txt &&
         AMD64_SHA=$(grep "cern-sso-cli-darwin-amd64-webauthn$" checksums.txt | awk '{print $1}') &&
         ARM64_SHA=$(grep "cern-sso-cli-darwin-arm64-webauthn$" checksums.txt | awk '{print $1}') &&
         rm -f checksums.txt &&
-        sed -i.bak "s|version \"[^\"]*\"|version \"$VERSION\"|g" Formula/cern-sso-cli.rb &&
+        sed -i.bak "s|version \"[^\"]*\"|version \"$VERSION_NO_V\"|g" Formula/cern-sso-cli.rb &&
         sed -i.bak "s|https://github.com/clelange/cern-sso-cli/releases/download/v[0-9.]*/cern-sso-cli-darwin-arm64-webauthn|https://github.com/clelange/cern-sso-cli/releases/download/$VERSION/cern-sso-cli-darwin-arm64-webauthn|g" Formula/cern-sso-cli.rb &&
         sed -i.bak "s|https://github.com/clelange/cern-sso-cli/releases/download/v[0-9.]*/cern-sso-cli-darwin-amd64-webauthn|https://github.com/clelange/cern-sso-cli/releases/download/$VERSION/cern-sso-cli-darwin-amd64-webauthn|g" Formula/cern-sso-cli.rb &&
         sed -i.bak "s|sha256 \".*\" # darwin-arm64-webauthn|sha256 \"$ARM64_SHA\" # darwin-arm64-webauthn|g" Formula/cern-sso-cli.rb &&
