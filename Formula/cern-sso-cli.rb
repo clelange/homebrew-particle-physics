@@ -7,7 +7,7 @@ class CernSsoCli < Formula
   on_macos do
     if Hardware::CPU.intel?
       url "https://github.com/clelange/cern-sso-cli/releases/download/v0.22.0/cern-sso-cli-darwin-amd64-webauthn"
-      sha256 "ce032c815092b22260bcbe98ab6abf1c4b3963ec1a07b177d988c54ba7aa6281" # darwin-amd64-webauthn
+      sha256 "" # darwin-amd64-webauthn
     elsif Hardware::CPU.arm?
       url "https://github.com/clelange/cern-sso-cli/releases/download/v0.22.0/cern-sso-cli-darwin-arm64-webauthn"
       sha256 "" # darwin-arm64-webauthn
