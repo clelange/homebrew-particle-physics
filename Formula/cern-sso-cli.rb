@@ -1,7 +1,7 @@
 class CernSsoCli < Formula
   desc "Command-line interface to obtain CERN SSO cookies and tokens"
   homepage "https://github.com/clelange/cern-sso-cli"
-  version "0.23.0"
+  version "0.24.0"
   license "GPL-3.0-only"
 
   on_macos do
