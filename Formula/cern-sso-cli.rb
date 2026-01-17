@@ -10,7 +10,7 @@ class CernSsoCli < Formula
       sha256 "6f230d73526713e5187233d066063bac753742bdccd6f95ac0a61cd03bd3829f" # darwin-amd64-webauthn
     elsif Hardware::CPU.arm?
       url "https://github.com/clelange/cern-sso-cli/releases/download/v0.25.0/cern-sso-cli-darwin-arm64-webauthn"
-      sha256 "530fb8b6646f2d602c8421fff545d3a4c7388b7200b8846af9449bb703205f1a" # darwin-arm64-webauthn
+      sha256 "c88d98bf1314421b51a7128807ccec953b649300f28636a6af556e733fb9d837" # darwin-arm64-webauthn
     end
   end
 
