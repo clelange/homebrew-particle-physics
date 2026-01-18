@@ -1,16 +1,16 @@
 class CernopendataClient < Formula
   desc "CERN Open Data Client"
   homepage "https://github.com/clelange/cernopendata-client-go"
-  version "0.1.3"
+  version "0.1.4"
   license "GPL-3.0-only"
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/clelange/cernopendata-client-go/releases/download/v0.1.3/cernopendata-client-darwin-amd64"
-      sha256 "dcc54435ad7054192e1dc38217a90d0b4fb264cc318c3e89130ea7563d2dfb1d"
+      url "https://github.com/clelange/cernopendata-client-go/releases/download/v0.1.4/cernopendata-client-darwin-amd64"
+      sha256 "addb25a2b110b4ebedc54bd22d55e2324cf64d6fafd868ee1dc2a092e2fb17fb"
     elsif Hardware::CPU.arm?
-      url "https://github.com/clelange/cernopendata-client-go/releases/download/v0.1.3/cernopendata-client-darwin-arm64"
-      sha256 "8a40a93bc322c4de1b1d640d4a2fdd83ad6d988e2a6be9e61f34cb873632da58"
+      url "https://github.com/clelange/cernopendata-client-go/releases/download/v0.1.4/cernopendata-client-darwin-arm64"
+      sha256 "9dd53c4dd7a85d1337b43c3d423653663b23a2566278264f523acee6eac1fcf6"
     end
   end
 
@@ -22,6 +22,6 @@ class CernopendataClient < Formula
   end
 
   test do
-    system bin/"cernopendata-client", "version"
+    system bin/"cernopendata-client", "--version"
   end
 end
