@@ -1,16 +1,16 @@
 class CernSsoCli < Formula
   desc "Command-line interface to obtain CERN SSO cookies and tokens"
   homepage "https://github.com/clelange/cern-sso-cli"
-  version "0.26.0"
+  version "0.27.1"
   license "GPL-3.0-only"
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/clelange/cern-sso-cli/releases/download/v0.26.0/cern-sso-cli-darwin-amd64-webauthn"
-      sha256 "35999fbe9c7cff011767b2d53a14a664c1980f66020bfe710b87ac0b0d91cb7d" # darwin-amd64-webauthn
+      url "https://github.com/clelange/cern-sso-cli/releases/download/v0.27.1/cern-sso-cli-darwin-amd64-webauthn"
+      sha256 "99f26d61866cf7ae98886b20aee8cf14f3469d28e955afc7912048e17dd13df3" # darwin-amd64-webauthn
     elsif Hardware::CPU.arm?
-      url "https://github.com/clelange/cern-sso-cli/releases/download/v0.26.0/cern-sso-cli-darwin-arm64-webauthn"
-      sha256 "54728d35debf4cea0fdab673a7699cbeb83d28f26435fac134a811ec5283f93c" # darwin-arm64-webauthn
+      url "https://github.com/clelange/cern-sso-cli/releases/download/v0.27.1/cern-sso-cli-darwin-arm64-webauthn"
+      sha256 "2297cab0bc0e92d6df1cc2f54bff22fdb24489c8c25f3230240a41896be6216d" # darwin-arm64-webauthn
     end
   end
 
