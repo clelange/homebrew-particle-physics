@@ -17,6 +17,7 @@ Then you can install any of the available formulae below using `brew install <fo
 ## Available formulae
 
 - `cern-sso-cli`: Command-line interface to obtain CERN SSO cookies and tokens ([GitHub](https://github.com/clelange/cern-sso-cli))
+- `cernopendata-client`: CERN Open Data Client ([GitHub](https://github.com/clelange/cernopendata-client-go))
 - `osg-ca-certificates`: CA certificates from the Open Science Grid
 - `voms-clients`: Virtual Organization Membership Service clients for grid computing
 - `wlcg-voms`: VOMS configuration files for various WLCG Virtual Organizations (ALICE, ATLAS, CMS, LHCb, etc.)

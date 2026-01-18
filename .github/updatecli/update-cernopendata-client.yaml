@@ -1,0 +1,99 @@
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  latestVersion:
+    name: "Latest cernopendata-client-go version"
+    kind: githubrelease
+    spec:
+      owner: "clelange"
+      repository: "cernopendata-client-go"
+      token: "{{ requiredEnv .github.token }}"
+      versionfilter:
+        kind: semver
+        pattern: "*"
+
+  versionNoV:
+    name: "Version without v"
+    kind: shell
+    spec:
+      command: 'echo {{ source "latestVersion" }} | sed "s/^v//"'
+
+  amd64Sha:
+    name: "AMD64 SHA"
+    kind: shell
+    spec:
+      command: >-
+        VERSION={{ source "latestVersion" }} &&
+        curl -sL https://github.com/clelange/cernopendata-client-go/releases/download/$VERSION/checksums.txt |
+        grep "cernopendata-client-darwin-amd64" | awk '{print $1}'
+
+  arm64Sha:
+    name: "ARM64 SHA"
+    kind: shell
+    spec:
+      command: >-
+        VERSION={{ source "latestVersion" }} &&
+        curl -sL https://github.com/clelange/cernopendata-client-go/releases/download/$VERSION/checksums.txt |
+        grep "cernopendata-client-darwin-arm64" | awk '{print $1}'
+
+targets:
+  updateFormula:
+    name: "Update formula"
+    kind: file
+    sourceid: latestVersion
+    scmid: default
+    spec:
+      file: Formula/cernopendata-client.rb
+      content: |
+        class CernopendataClient < Formula
+          desc "CERN Open Data Client"
+          homepage "https://github.com/clelange/cernopendata-client-go"
+          version "{{ source "versionNoV" }}"
+          license "GPL-3.0-only"
+
+          on_macos do
+            if Hardware::CPU.intel?
+              url "https://github.com/clelange/cernopendata-client-go/releases/download/{{ source "latestVersion" }}/cernopendata-client-darwin-amd64"
+              sha256 "{{ source "amd64Sha" }}"
+            elsif Hardware::CPU.arm?
+              url "https://github.com/clelange/cernopendata-client-go/releases/download/{{ source "latestVersion" }}/cernopendata-client-darwin-arm64"
+              sha256 "{{ source "arm64Sha" }}"
+            end
+          end
+
+          def install
+            bin.install "cernopendata-client-darwin-amd64" => "cernopendata-client" if Hardware::CPU.intel?
+            bin.install "cernopendata-client-darwin-arm64" => "cernopendata-client" if Hardware::CPU.arm?
+
+            chmod 0755, bin/"cernopendata-client"
+          end
+
+          test do
+            system bin/"cernopendata-client", "--version"
+          end
+        end
+
+actions:
+  default:
+    kind: github/pullrequest
+    scmid: default
+    title: Update cernopendata-client to "{{ source "latestVersion" }}"
+    spec:
+      automerge: false
+      mergemethod: squash
+      sourcebranch: update-cernopendata-client-{{ source "latestVersion" }}
+      description: |
+        This automated PR updates cernopendata-client to version {{ source "latestVersion" }}.
+      labels:
+        - automation
+        - dependencies
