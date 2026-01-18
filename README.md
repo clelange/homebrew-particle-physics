@@ -1,4 +1,4 @@
-# My homebrew tap
+# Homebrew tap with particle physics formulae
 
 A list of tools that I tend to install on new computers, which aren't part of the standard [Homebrew Formulae](https://formulae.brew.sh/).
 
