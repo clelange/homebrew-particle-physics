@@ -47,55 +47,46 @@ sources:
         grep "cern-sso-cli-darwin-arm64-webauthn" | awk '{print $1}'
 
 targets:
-  updateVersion:
-    name: "Update formula version"
-    sourceid: versionNoV
+  updateFormula:
+    name: "Update formula"
     kind: file
-    scmid: default
-    spec:
-      file: Formula/cern-sso-cli.rb
-      matchpattern: 'version "[^"]*"'
-      replacepattern: 'version "{{ source "versionNoV" }}"'
-
-  updateAmd64Url:
-    name: "Update AMD64 URL"
     sourceid: latestVersion
-    kind: file
     scmid: default
     spec:
       file: Formula/cern-sso-cli.rb
-      matchpattern: 'url "https://github.com/clelange/cern-sso-cli/releases/download/v[0-9.]+/cern-sso-cli-darwin-amd64-webauthn"'
-      replacepattern: 'url "https://github.com/clelange/cern-sso-cli/releases/download/{{ source "latestVersion" }}/cern-sso-cli-darwin-amd64-webauthn"'
+      content: |
+        class CernSsoCli < Formula
+          desc "Command-line interface to obtain CERN SSO cookies and tokens"
+          homepage "https://github.com/clelange/cern-sso-cli"
+          version "{{ source "versionNoV" }}"
+          license "GPL-3.0-only"
 
-  updateArm64Url:
-    name: "Update ARM64 URL"
-    sourceid: latestVersion
-    kind: file
-    scmid: default
-    spec:
-      file: Formula/cern-sso-cli.rb
-      matchpattern: 'url "https://github.com/clelange/cern-sso-cli/releases/download/v[0-9.]+/cern-sso-cli-darwin-arm64-webauthn"'
-      replacepattern: 'url "https://github.com/clelange/cern-sso-cli/releases/download/{{ source "latestVersion" }}/cern-sso-cli-darwin-arm64-webauthn"'
+          on_macos do
+            if Hardware::CPU.intel?
+              url "https://github.com/clelange/cern-sso-cli/releases/download/{{ source "latestVersion" }}/cern-sso-cli-darwin-amd64-webauthn"
+              sha256 "{{ source "amd64Sha" }}" # darwin-amd64-webauthn
+            elsif Hardware::CPU.arm?
+              url "https://github.com/clelange/cern-sso-cli/releases/download/{{ source "latestVersion" }}/cern-sso-cli-darwin-arm64-webauthn"
+              sha256 "{{ source "arm64Sha" }}" # darwin-arm64-webauthn
+            end
+          end
 
-  updateAmd64Sha:
-    name: "Update AMD64 SHA"
-    sourceid: amd64Sha
-    kind: file
-    scmid: default
-    spec:
-      file: Formula/cern-sso-cli.rb
-      matchpattern: 'sha256 "[^"]*" # darwin-amd64-webauthn'
-      replacepattern: 'sha256 "{{ source "amd64Sha" }}" # darwin-amd64-webauthn'
+          depends_on "libfido2"
 
-  updateArm64Sha:
-    name: "Update ARM64 SHA"
-    sourceid: arm64Sha
-    kind: file
-    scmid: default
-    spec:
-      file: Formula/cern-sso-cli.rb
-      matchpattern: 'sha256 "[^"]*" # darwin-arm64-webauthn'
-      replacepattern: 'sha256 "{{ source "arm64Sha" }}" # darwin-arm64-webauthn'
+          def install
+            bin.install "cern-sso-cli-darwin-amd64-webauthn" => "cern-sso-cli" if Hardware::CPU.intel?
+            bin.install "cern-sso-cli-darwin-arm64-webauthn" => "cern-sso-cli" if Hardware::CPU.arm?
+
+            chmod 0755, bin/"cern-sso-cli"
+            generate_completions_from_executable(bin/"cern-sso-cli", "completion")
+          end
+
+
+
+          test do
+            system bin/"cern-sso-cli", "--version"
+          end
+        end
 
 actions:
   default:
