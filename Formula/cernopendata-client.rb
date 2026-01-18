@@ -22,6 +22,6 @@ class CernopendataClient < Formula
   end
 
   test do
-    system bin/"cernopendata-client", "--version"
+    system bin/"cernopendata-client", "version"
   end
 end
