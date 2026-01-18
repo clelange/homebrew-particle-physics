@@ -48,7 +48,7 @@ sources:
 
 targets:
   updateFormula:
-    name: "Update formula"
+    name: Update cern-sso-cli to {{ source "latestVersion" }}
     kind: file
     sourceid: latestVersion
     scmid: default

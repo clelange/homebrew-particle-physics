@@ -33,7 +33,7 @@ sources:
 
 targets:
   updateFormula:
-    name: "Update formula"
+    name: Update voms-clients to {{ source "latestVersion" }}
     kind: file
     sourceid: latestVersion
     scmid: default

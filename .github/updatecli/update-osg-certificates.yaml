@@ -50,7 +50,7 @@ sources:
 
 targets:
   updateUrl:
-    name: "Update tarball URL"
+    name: Update OSG CA Certificates to {{ source `certsVersion` }} (URL)
     sourceid: tarballUrl
     kind: file
     scmid: default
@@ -60,7 +60,7 @@ targets:
       replacepattern: 'url "{{ source `tarballUrl` }}"'
 
   updateSha:
-    name: "Update SHA256 checksum"
+    name: Update OSG CA Certificates to {{ source `certsVersion` }} (SHA)
     sourceid: sha256Sum
     kind: file
     scmid: default
