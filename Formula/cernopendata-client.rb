@@ -7,10 +7,10 @@ class CernopendataClient < Formula
   on_macos do
     if Hardware::CPU.intel?
       url "https://github.com/clelange/cernopendata-client-go/releases/download/v0.1.3/cernopendata-client-darwin-amd64"
-      sha256 "dcc54435ad7054192e1dc38217a90d0b4fb264cc318c3e89130ea7563d2dfb1d"
+      sha256 "f6ccd9cd29fb5437d49532b4b40db4d2a9839490a137d5dad90483e6cd9d5e0a"
     elsif Hardware::CPU.arm?
       url "https://github.com/clelange/cernopendata-client-go/releases/download/v0.1.3/cernopendata-client-darwin-arm64"
-      sha256 "8a40a93bc322c4de1b1d640d4a2fdd83ad6d988e2a6be9e61f34cb873632da58"
+      sha256 "b9f1d9f10cea47dd0ba1b507079e261738a25049f7d37d60a532132b662924da"
     end
   end
 
