@@ -1,0 +1,39 @@
+name: Brew Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        formula:
+          - cern-sso-cli
+          - cernopendata-client
+          - voms-clients
+          - wlcg-voms
+          - osg-ca-certificates
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Homebrew
+        run: |
+          # Symlink the workspace to the Homebrew tap directory
+          # This ensures brew sees the local files (including PR changes)
+          # instead of cloning from upstream
+          mkdir -p $(brew --repo)/Library/Taps/${GITHUB_REPOSITORY%/*}
+          ln -s ${GITHUB_WORKSPACE} $(brew --repo)/Library/Taps/${GITHUB_REPOSITORY}
+
+      - name: Install formula
+        run: |
+          brew install --build-from-source ${{ matrix.formula }}
+
+      - name: Test formula
+        run: |
+          brew test ${{ matrix.formula }}
