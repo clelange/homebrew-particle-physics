@@ -1,15 +1,11 @@
-# Documentation: https://docs.brew.sh/Formula-Cookbook
-#                https://rubydoc.brew.sh/Formula
-# PLEASE REMOVE ALL GENERATED COMMENTS BEFORE SUBMITTING YOUR PULL REQUEST!
 class VomsClients < Formula
   desc "voms-clients"
   homepage "italiangrid.github.io/voms"
-  url "https://github.com/italiangrid/voms-clients/archive/refs/tags/v3.3.5.zip"
-  sha256 "74e54bdaa42f98535cd1721a0b62d50df05df55f5c2a15efe4ce2610aa642f0b"
+  url "https://github.com/italiangrid/voms-clients/archive/refs/tags/v3.3.7.zip"
+  sha256 "6d6e5668f5ca7c410dd9125356f8dac2a150bd23165e1dda16c0a8631c0481e9"
   license "Apache-2.0"
 
   depends_on "openjdk"
-  # depends_on "openssl@1.1"
   depends_on "maven" => :build
 
   def install
