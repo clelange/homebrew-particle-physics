@@ -1,0 +1,89 @@
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  latestVersion:
+    name: "Latest voms-clients version"
+    kind: githubrelease
+    spec:
+      owner: "italiangrid"
+      repository: "voms-clients"
+      token: "{{ requiredEnv .github.token }}"
+      versionfilter:
+        kind: semver
+        pattern: "*"
+
+  sourceSha:
+    name: "Source SHA"
+    kind: shell
+    spec:
+      command: >-
+        VERSION={{ source "latestVersion" }} &&
+        curl -sL https://github.com/italiangrid/voms-clients/archive/refs/tags/$VERSION.zip |
+        shasum -a 256 | awk '{print $1}'
+
+targets:
+  updateFormula:
+    name: "Update formula"
+    kind: file
+    sourceid: latestVersion
+    scmid: default
+    spec:
+      file: Formula/voms-clients.rb
+      content: |
+        class VomsClients < Formula
+          desc "voms-clients"
+          homepage "italiangrid.github.io/voms"
+          url "https://github.com/italiangrid/voms-clients/archive/refs/tags/{{ source "latestVersion" }}.zip"
+          sha256 "{{ source "sourceSha" }}"
+          license "Apache-2.0"
+
+          depends_on "openjdk"
+          depends_on "maven" => :build
+
+          def install
+            system "mvn", "package", "-Dmaven.repo.local=$(pwd)/m2repo/", "-Dmaven.javadoc.skip=true"
+            system "tar", "-xf", "target/voms-clients.tar.gz"
+            share.install "voms-clients/share/java"
+            man5.install Dir["voms-clients/share/man/man5/*.5"]
+            man1.install Dir["voms-clients/share/man/man1/*.1"]
+            bin.install Dir["voms-clients/bin/*"]
+          end
+
+          def caveats
+            on_macos do
+              <<~EOS
+                If the Java Runtime cannot be located, make sure to symlink OpenJDK using
+                  sudo ln -sfn #{opt_libexec}/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk.jdk
+              EOS
+            end
+          end
+
+          test do
+            system "#{bin}/voms-proxy-info", "--version"
+          end
+        end
+
+actions:
+  default:
+    kind: github/pullrequest
+    scmid: default
+    title: Update voms-clients to "{{ source "latestVersion" }}"
+    spec:
+      automerge: false
+      mergemethod: squash
+      sourcebranch: update-voms-clients-{{ source "latestVersion" }}
+      description: |
+        This automated PR updates voms-clients to version {{ source "latestVersion" }}.
+      labels:
+        - automation
+        - dependencies

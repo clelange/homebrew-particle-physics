@@ -1,0 +1,57 @@
+name: Update voms-clients
+
+on:
+  push:
+    branches: [main]
+  # Trigger Updatecli if a pullrequest is open targeting the main branch.
+  # This is useful to test Updatecli manifest change
+  pull_request:
+    branches: [main]
+  schedule:
+    # Run daily at 00:00 UTC
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+    # Allow manual triggering
+
+jobs:
+  update-formula:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "write"
+      pull-requests: "write"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history for proper branching
+
+      - name: Debug environment
+        run: |
+          echo "GitHub workspace: ${GITHUB_WORKSPACE}"
+          ls -la
+          echo "Formula directory contents:"
+          ls -la Formula/
+
+      - name: Install Updatecli
+        uses: updatecli/updatecli-action@v2
+
+      - name: Run Updatecli in Dry Run mode
+        run: updatecli diff --config ${GITHUB_WORKSPACE}/.github/updatecli/update-voms-clients.yaml --values ${GITHUB_WORKSPACE}/.github/updatecli/values.yaml
+        env:
+          UPDATECLI_GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Run Updatecli in apply mode
+        run: updatecli apply --config ${GITHUB_WORKSPACE}/.github/updatecli/update-voms-clients.yaml --values ${GITHUB_WORKSPACE}/.github/updatecli/values.yaml
+        env:
+          UPDATECLI_GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Print result
+        run: |
+          echo "=== Formula after update attempt ==="
+          cat Formula/voms-clients.rb
+          # Check if any changes were made and committed
+          git status
+          # List all branches to see if a new PR branch was created
+          echo "=== Branches ==="
+          git branch -a
