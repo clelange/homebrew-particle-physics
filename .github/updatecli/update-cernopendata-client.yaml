@@ -34,8 +34,8 @@ sources:
     spec:
       command: >-
         VERSION={{ source "latestVersion" }} &&
-        curl -sL https://github.com/clelange/cernopendata-client-go/releases/download/$VERSION/cernopendata-client-darwin-amd64 |
-        shasum -a 256 | awk '{print $1}'
+        curl -sL https://github.com/clelange/cernopendata-client-go/releases/download/$VERSION/checksums.txt |
+        grep "cernopendata-client-darwin-amd64" | awk '{print $1}'
 
   arm64Sha:
     name: "ARM64 SHA"
@@ -43,8 +43,8 @@ sources:
     spec:
       command: >-
         VERSION={{ source "latestVersion" }} &&
-        curl -sL https://github.com/clelange/cernopendata-client-go/releases/download/$VERSION/cernopendata-client-darwin-arm64 |
-        shasum -a 256 | awk '{print $1}'
+        curl -sL https://github.com/clelange/cernopendata-client-go/releases/download/$VERSION/checksums.txt |
+        grep "cernopendata-client-darwin-arm64" | awk '{print $1}'
 
 targets:
   updateFormula:
