@@ -21,7 +21,7 @@ class VomsClients < Formula
     on_macos do
       <<~EOS
         If the Java Runtime cannot be located, make sure to symlink OpenJDK using
-          sudo ln -sfn #{opt_libexec}/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk.jdk
+          sudo ln -sfn #{HOMEBREW_PREFIX}/opt/openjdk/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk.jdk
       EOS
     end
   end
