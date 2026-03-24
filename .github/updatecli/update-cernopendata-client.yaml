@@ -15,7 +15,7 @@ sources:
     name: "Latest cernopendata-client-go version"
     kind: githubrelease
     spec:
-      owner: "clelange"
+      owner: "cernopendata"
       repository: "cernopendata-client-go"
       token: "{{ requiredEnv .github.token }}"
       versionfilter:
@@ -34,7 +34,7 @@ sources:
     spec:
       command: >-
         VERSION={{ source "latestVersion" }} &&
-        curl -sL https://github.com/clelange/cernopendata-client-go/releases/download/$VERSION/checksums.txt |
+        curl -sL https://github.com/cernopendata/cernopendata-client-go/releases/download/$VERSION/checksums.txt |
         grep "cernopendata-client-darwin-amd64" | awk '{print $1}'
 
   arm64Sha:
@@ -43,7 +43,7 @@ sources:
     spec:
       command: >-
         VERSION={{ source "latestVersion" }} &&
-        curl -sL https://github.com/clelange/cernopendata-client-go/releases/download/$VERSION/checksums.txt |
+        curl -sL https://github.com/cernopendata/cernopendata-client-go/releases/download/$VERSION/checksums.txt |
         grep "cernopendata-client-darwin-arm64" | awk '{print $1}'
 
 targets:
@@ -57,16 +57,16 @@ targets:
       content: |
         class CernopendataClient < Formula
           desc "CERN Open Data Client"
-          homepage "https://github.com/clelange/cernopendata-client-go"
+          homepage "https://github.com/cernopendata/cernopendata-client-go"
           version "{{ source "versionNoV" }}"
           license "GPL-3.0-only"
 
           on_macos do
             if Hardware::CPU.intel?
-              url "https://github.com/clelange/cernopendata-client-go/releases/download/{{ source "latestVersion" }}/cernopendata-client-darwin-amd64"
+              url "https://github.com/cernopendata/cernopendata-client-go/releases/download/{{ source "latestVersion" }}/cernopendata-client-darwin-amd64"
               sha256 "{{ source "amd64Sha" }}"
             elsif Hardware::CPU.arm?
-              url "https://github.com/clelange/cernopendata-client-go/releases/download/{{ source "latestVersion" }}/cernopendata-client-darwin-arm64"
+              url "https://github.com/cernopendata/cernopendata-client-go/releases/download/{{ source "latestVersion" }}/cernopendata-client-darwin-arm64"
               sha256 "{{ source "arm64Sha" }}"
             end
           end
