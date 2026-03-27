@@ -1,0 +1,48 @@
+name: Update EGI Trustanchors
+
+on:
+  schedule:
+    # Run daily at 00:00 UTC
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  update-formula:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "write"
+      pull-requests: "write"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Debug environment
+        run: |
+          echo "GitHub workspace: ${GITHUB_WORKSPACE}"
+          ls -la
+          echo "Formula directory contents:"
+          ls -la Formula/
+
+      - name: Install Updatecli
+        uses: updatecli/updatecli-action@v2
+
+      - name: Run Updatecli in Dry Run mode
+        run: updatecli diff --config ${GITHUB_WORKSPACE}/.github/updatecli/update-egi-trustanchors.yaml --values ${GITHUB_WORKSPACE}/.github/updatecli/values.yaml
+        env:
+          UPDATECLI_GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Run Updatecli in apply mode
+        run: updatecli apply --config ${GITHUB_WORKSPACE}/.github/updatecli/update-egi-trustanchors.yaml --values ${GITHUB_WORKSPACE}/.github/updatecli/values.yaml
+        env:
+          UPDATECLI_GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Print result
+        run: |
+          echo "=== Formula after update attempt ==="
+          cat Formula/egi-trustanchors.rb
+          git status
+          echo "=== Branches ==="
+          git branch -a

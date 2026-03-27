@@ -18,6 +18,7 @@ Then you can install any of the available formulae below using `brew install <fo
 
 - `cern-sso-cli`: Command-line interface to obtain CERN SSO cookies and tokens ([GitHub](https://github.com/clelange/cern-sso-cli))
 - `cernopendata-client`: CERN Open Data Client ([GitHub](https://github.com/cernopendata/cernopendata-client-go))
+- `egi-trustanchors`: CA certificates from EGI EUGridPMA
 - `osg-ca-certificates`: CA certificates from the Open Science Grid
 - `voms-clients`: Virtual Organization Membership Service clients for grid computing
 - `wlcg-voms`: VOMS configuration files for various WLCG Virtual Organizations (ALICE, ATLAS, CMS, LHCb, etc.)
@@ -41,6 +42,28 @@ To use with grid tools, you may need to:
    ```shell
    export X509_CERT_DIR=$(brew --prefix osg-ca-certificates)/etc/grid-security/certificates
    ```
+
+**Note:** If you also have `egi-trustanchors` installed, the `X509_CERT_DIR` environment variable would override the other. Use symlinks instead if you need both, or choose one certificate distribution.
+
+### egi-trustanchors
+
+After installation, the EGI-trustanchors CA certificates are available in:
+- `$(brew --prefix egi-trustanchors)/etc/grid-security-emi/certificates/`
+
+To use with grid tools, you may need to:
+
+1. Create symbolic links to system locations (requires sudo):
+   ```shell
+   sudo mkdir -p /etc/grid-security-emi
+   sudo ln -sf $(brew --prefix egi-trustanchors)/etc/grid-security-emi/certificates /etc/grid-security-emi/certificates
+   ```
+
+2. Or configure your environment:
+   ```shell
+   export X509_CERT_DIR=$(brew --prefix egi-trustanchors)/etc/grid-security-emi/certificates
+   ```
+
+**Note:** If you also have `osg-ca-certificates` installed, the `X509_CERT_DIR` environment variable would override the other. Use symlinks instead if you need both, or choose one certificate distribution.
 
 ### wlcg-voms
 
