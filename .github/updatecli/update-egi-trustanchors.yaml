@@ -1,0 +1,77 @@
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  certsVersion:
+    name: "EGI-trustanchors Certificate Version"
+    kind: shell
+    spec:
+      command: >-
+        curl -sL http://repository.egi.eu/sw/production/cas/1/current/release.xml |
+        sed -n 's/.*<Version>\([^<]*\)<\/Version>.*/\1/p'
+
+  tarballUrl:
+    name: "EGI-trustanchors Tarball URL"
+    kind: shell
+    spec:
+      command: >-
+        echo "http://repository.egi.eu/sw/production/cas/1/current/tgz/igtf-preinstalled-bundle-classic.tar.gz"
+
+  sha256Sum:
+    name: "EGI-trustanchors SHA256 Sum"
+    kind: shell
+    spec:
+      command: >-
+        curl -sL "http://repository.egi.eu/sw/production/cas/1/current/tgz/igtf-preinstalled-bundle-classic.tar.gz" |
+        shasum -a 256 | awk '{print $1}'
+
+targets:
+  updateUrl:
+    name: Update EGI-trustanchors to {{ source `certsVersion` }} (URL)
+    sourceid: tarballUrl
+    kind: file
+    scmid: default
+    spec:
+      file: Formula/egi-trustanchors.rb
+      matchpattern: 'url "[^"]+"'
+      replacepattern: 'url "{{ source `tarballUrl` }}"'
+      forcecreate: true
+
+  updateSha:
+    name: Update EGI-trustanchors to {{ source `certsVersion` }} (SHA)
+    sourceid: sha256Sum
+    kind: file
+    scmid: default
+    spec:
+      file: Formula/egi-trustanchors.rb
+      matchpattern: 'sha256 "[^"]+"'
+      replacepattern: 'sha256 "{{ source `sha256Sum` }}"'
+      forcecreate: true
+
+actions:
+  default:
+    kind: github/pullrequest
+    scmid: default
+    title: Update EGI-trustanchors to "{{ source `certsVersion` }}"
+    spec:
+      automerge: false
+      mergemethod: squash
+      sourcebranch: update-egi-trustanchors-{{ source `certsVersion` }}
+      description: |
+        This automated PR updates the EGI-trustanchors to version {{ source `certsVersion` }}.
+
+        * New version: {{ source `certsVersion` }}
+        * Tarball URL: {{ source `tarballUrl` }}
+        * SHA256: {{ source `sha256Sum` }}
+      labels:
+        - automation
+        - dependencies
