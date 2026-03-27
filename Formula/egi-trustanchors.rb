@@ -3,6 +3,7 @@ class EgiTrustanchors < Formula
   homepage "https://repository.egi.eu/sw/production/cas/1/current/"
   url "http://repository.egi.eu/sw/production/cas/1/current/tgz/igtf-preinstalled-bundle-classic.tar.gz"
   sha256 "6998a0bf0a92b969bf9172cf118647c20d2881ad6935280609bae02babffb8bb"
+  version "1.139"
 
   def install
     (prefix/"etc/grid-security-emi/certificates").mkpath
