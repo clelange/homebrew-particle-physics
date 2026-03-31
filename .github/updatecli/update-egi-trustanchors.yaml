@@ -57,6 +57,17 @@ targets:
       replacepattern: 'sha256 "{{ source `sha256Sum` }}"'
       forcecreate: true
 
+  updateVersion:
+    name: Update EGI-trustanchors to {{ source `certsVersion` }} (Version)
+    sourceid: certsVersion
+    kind: file
+    scmid: default
+    spec:
+      file: Formula/egi-trustanchors.rb
+      matchpattern: 'version "[^"]+"'
+      replacepattern: 'version "{{ source `certsVersion` }}"'
+      forcecreate: true
+
 actions:
   default:
     kind: github/pullrequest
