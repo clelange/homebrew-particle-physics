@@ -62,7 +62,6 @@ targets:
           homepage "https://repo.opensciencegrid.org/cadist/"
           url "{{ source `tarballUrl` }}"
           sha256 "{{ source `sha256Sum` }}"
-          version "{{ source `certsVersion` }}"
 
           def install
             # Create directories
