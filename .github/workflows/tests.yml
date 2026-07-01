@@ -21,20 +21,28 @@ jobs:
           - osg-ca-certificates
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Homebrew
         run: |
           # Symlink the workspace to the Homebrew tap directory
           # This ensures brew sees the local files (including PR changes)
           # instead of cloning from upstream
-          mkdir -p $(brew --repo)/Library/Taps/${GITHUB_REPOSITORY%/*}
-          ln -s ${GITHUB_WORKSPACE} $(brew --repo)/Library/Taps/${GITHUB_REPOSITORY}
+          tap_root="$(brew --repo)/Library/Taps/${GITHUB_REPOSITORY%/*}"
+          tap_path="$(brew --repo)/Library/Taps/${GITHUB_REPOSITORY}"
+          mkdir -p "$tap_root"
+          ln -s "$GITHUB_WORKSPACE" "$tap_path"
+
+      - name: Trust formula
+        run: |
+          tap_name="${GITHUB_REPOSITORY/homebrew-/}"
+          formula="${{ matrix.formula }}"
+          brew trust --formula "${tap_name}/${formula}"
 
       - name: Install formula
         run: |
-          brew install --build-from-source ${{ matrix.formula }}
+          brew install --build-from-source "${{ matrix.formula }}"
 
       - name: Test formula
         run: |
-          brew test ${{ matrix.formula }}
+          brew test "${{ matrix.formula }}"

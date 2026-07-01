@@ -20,13 +20,17 @@ jobs:
 
       - name: Set up Homebrew path
         run: |
-          echo "/usr/local/bin:/usr/local/sbin" >> $GITHUB_PATH
-          echo "HOMEBREW_PREFIX=/usr/local" >> $GITHUB_ENV
-          echo "HOMEBREW_REPOSITORY=/usr/local/Homebrew" >> $GITHUB_ENV
+          echo "/usr/local/bin:/usr/local/sbin" >> "$GITHUB_PATH"
+          echo "HOMEBREW_PREFIX=/usr/local" >> "$GITHUB_ENV"
+          echo "HOMEBREW_REPOSITORY=/usr/local/Homebrew" >> "$GITHUB_ENV"
 
       - name: Add tap to Homebrew
         run: |
           brew tap "${GITHUB_REPOSITORY}" "${GITHUB_WORKSPACE}"
+
+      - name: Trust formula
+        run: |
+          brew trust --formula "${GITHUB_REPOSITORY/homebrew-/}/osg-ca-certificates"
 
       - name: Install and test formula
         run: |
