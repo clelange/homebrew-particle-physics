@@ -1,16 +1,16 @@
 class CernopendataClient < Formula
   desc "CERN Open Data Client"
   homepage "https://github.com/cernopendata/cernopendata-client-go"
-  version "0.9.1"
+  version "0.10.0"
   license "GPL-3.0-only"
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/cernopendata/cernopendata-client-go/releases/download/v0.9.1/cernopendata-client-darwin-amd64"
-      sha256 "d13eb11ade2adc37e3cab4048e4b96bbd410c97e64f79a11134189ed5423fea5"
+      url "https://github.com/cernopendata/cernopendata-client-go/releases/download/v0.10.0/cernopendata-client-darwin-amd64"
+      sha256 "a0601e299ac155622cef0b83c221667d87b606282882b309c7fd644a435a0122"
     elsif Hardware::CPU.arm?
-      url "https://github.com/cernopendata/cernopendata-client-go/releases/download/v0.9.1/cernopendata-client-darwin-arm64"
-      sha256 "bd9e57646cde8bc361eeecd45efa6bf339c813d7fabb52d652f9bd337b9003f0"
+      url "https://github.com/cernopendata/cernopendata-client-go/releases/download/v0.10.0/cernopendata-client-darwin-arm64"
+      sha256 "0914c3305dce54494b2b14f5ff9ce66bbc020fb875baa84a94da5ee359ae6eeb"
     end
   end
 
