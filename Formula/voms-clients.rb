@@ -1,8 +1,8 @@
 class VomsClients < Formula
   desc "voms-clients"
   homepage "italiangrid.github.io/voms"
-  url "https://github.com/italiangrid/voms-clients/archive/refs/tags/v3.3.8.zip"
-  sha256 "508236033bd879900375e8ddb738681072d58afcdf05aa14d7489987454de025"
+  url "https://github.com/italiangrid/voms-clients/archive/refs/tags/v3.4.0.zip"
+  sha256 "7023566c0592e9f71a6208c366c34a84c9f4afa00789d1ffc7ea2c7b0e32c809"
   license "Apache-2.0"
 
   depends_on "openjdk"
