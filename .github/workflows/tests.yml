@@ -41,7 +41,7 @@ jobs:
 
       - name: Install formula
         run: |
-          brew install --build-from-source "${{ matrix.formula }}"
+          brew install --build-from-source --verbose "${{ matrix.formula }}"
 
       - name: Test formula
         run: |
