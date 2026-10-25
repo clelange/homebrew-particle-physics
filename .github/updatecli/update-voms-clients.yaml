@@ -20,7 +20,9 @@ sources:
       token: "{{ requiredEnv .github.token }}"
       versionfilter:
         kind: semver
-        pattern: "*"
+        # 3.4.0's Mockito tests cannot self-attach in Homebrew's macOS sandbox.
+        # Upstream fix: https://github.com/italiangrid/voms-clients/pull/60
+        pattern: "!=3.4.0"
 
   sourceSha:
     name: "Source SHA"
