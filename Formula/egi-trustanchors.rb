@@ -2,8 +2,8 @@ class EgiTrustanchors < Formula
   desc "CA certificates from EGI EUGridPMA"
   homepage "https://repository.egi.eu/sw/production/cas/1/current/"
   url "http://repository.egi.eu/sw/production/cas/1/current/tgz/igtf-preinstalled-bundle-classic.tar.gz"
-  sha256 "8304383945701d14a0b8804a8dff2db5ed6600beedb9635dc501af1136151435"
-  version "1.147-1"
+  sha256 "0000dc417a5064055862bc134237683bff5cb5de6caaa2ce5402b0bffeda819b"
+  version "1.148-1"
 
   def install
     (prefix/"etc/grid-security-emi/certificates").mkpath
